@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أداة تقييم الميسّر | المدرب بلال شنك</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --teal: #2a8f7b;
+      --navy: #1a4d5c;
+      --sky: #d4f1f4;
+      --celadon: #d8f0e3;
+      --muted: #4d6b70;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Cairo", system-ui, sans-serif;
+      background: linear-gradient(165deg, #d4f1f4 0%, #e7f8f4 42%, #d8f0e3 100%);
+      color: #1a2330;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 24px 16px 80px; }
+    .card {
+      background: linear-gradient(180deg, #f7fffc 0%, #eefaf6 100%);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(42,111,122,.12);
+      overflow: hidden;
+      border: 1px solid #c5e8df;
+    }
+    header.hero {
+      background: linear-gradient(135deg, #bfeaf0 0%, #c8efe4 55%, #d8f0e3 100%);
+      color: #13424c;
+      padding: 32px 28px 24px;
+      position: relative;
+    }
+    header.hero::after {
+      content: "";
+      position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+      background: linear-gradient(90deg, #7ec8d4, #8ed3b8, #7ec8d4);
+    }
+    .brand-en { letter-spacing: .08em; color: #2a6f7a; font-size: 13px; font-weight: 600; }
+    h1 { font-size: 26px; line-height: 1.4; margin: 8px 0 6px; }
+    .subtitle { color: #3d6a72; font-size: 15px; }
+    .author { margin-top: 14px; font-weight: 700; color: #1a4d5c; font-size: 16px; }
+    .author small { display: block; font-weight: 400; color: #3d6a72; font-size: 13px; margin-top: 2px; }
+    .counter-box {
+      margin-top: 18px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid #9ad9d0;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .counter-label { font-size: 13px; color: #2a6f7a; margin-bottom: 6px; }
+    .odometer { display: flex; gap: 5px; direction: ltr; }
+    .digit {
+      width: 38px; height: 48px;
+      background: #fff;
+      border: 1px solid #7ec8d4;
+      border-radius: 8px;
+      color: #1a4d5c;
+      font-size: 24px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    nav.steps {
+      display: flex; gap: 8px; padding: 12px 18px; background: #dff4ef; flex-wrap: wrap;
+    }
+    nav.steps span {
+      font-size: 12px; padding: 6px 10px; border-radius: 999px;
+      background: #fff; color: var(--muted);
+    }
+    nav.steps span.active { background: #1a4d5c; color: #e7fbf6; font-weight: 700; }
+    .body { padding: 22px 26px 28px; }
+    h2 { color: var(--navy); font-size: 19px; margin: 6px 0 12px; }
+    p.lead { color: var(--muted); margin-bottom: 16px; line-height: 1.8; }
+    .axis {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px 16px 6px;
+      margin-bottom: 16px;
+      border: 1px solid #c5e8df;
+    }
+    .axis h3 {
+      font-size: 15px;
+      color: var(--teal);
+      margin-bottom: 10px;
+      border-bottom: 1px dashed #b7e0d6;
+      padding-bottom: 6px;
+    }
+    .q { margin-bottom: 14px; }
+    .q p { font-weight: 600; margin-bottom: 6px; color: var(--navy); }
+    .q .num { color: var(--teal); margin-left: 4px; }
+    .scale { display: flex; flex-wrap: wrap; gap: 5px; }
+    .scale label {
+      flex: 1 1 100px;
+      font-size: 12px;
+      background: #eefaf8;
+      border: 1px solid #b7e0d6;
+      border-radius: 8px;
+      padding: 7px 5px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .scale input { display: none; }
+    .scale label:has(input:checked) {
+      background: #1a4d5c;
+      color: #e7fbf6;
+      border-color: #1a4d5c;
+      font-weight: 700;
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    button {
+      font-family: inherit;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-gold { background: linear-gradient(180deg, #7ed3c4, #3aa39a); color: #08332e; }
+    .btn-navy { background: #1a4d5c; color: #fff; }
+    .btn-ghost { background: #fff; border: 1px solid #9ad9d0; color: var(--navy); }
+    .hidden { display: none !important; }
+    .score-hero {
+      text-align: center;
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #c5e8df;
+      margin-bottom: 16px;
+    }
+    .pct { font-size: 52px; font-weight: 800; color: var(--navy); line-height: 1; }
+    .pct span { font-size: 20px; }
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .l1 { background: #dcfce7; color: #166534; }
+    .l2 { background: #d1fae5; color: #047857; }
+    .l3 { background: #fef3c7; color: #92400e; }
+    .l4 { background: #ffedd5; color: #9a3412; }
+    .l5 { background: #fee2e2; color: #991b1b; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+    th, td { padding: 9px 11px; text-align: right; border-bottom: 1px solid #eee; font-size: 14px; }
+    th { background: #1a4d5c; color: #e7fbf6; }
+    .bar { height: 7px; background: #dff4ef; border-radius: 99px; overflow: hidden; margin-top: 3px; }
+    .bar i { display: block; height: 100%; background: var(--teal); }
+    .tips { background: #fff; border-radius: 14px; padding: 16px; margin: 12px 0; border: 1px solid #c5e8df; }
+    .tips h3 { color: var(--navy); margin-bottom: 8px; }
+    .tips li { margin: 7px 0; line-height: 1.7; color: #2b3644; }
+    .train-box {
+      background: linear-gradient(135deg, #1a4d5c, #2a8f7b);
+      color: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 14px;
+    }
+    .train-box h3 { color: #d8f0e3; margin-bottom: 6px; }
+    .course-name { font-size: 20px; font-weight: 800; margin: 6px 0 10px; }
+    footer.note { margin-top: 16px; font-size: 12px; color: #4d6b70; text-align: center; }
+    @media print {
+      body { background: #fff !important; }
+      nav.steps, .actions, .no-print { display: none !important; }
+      #intro, #quiz { display: none !important; }
+      #report { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header class="hero">
+        <div class="brand-en">FACILITATOR ASSESSMENT TOOL</div>
+        <h1>أداة تقييم الميسّر</h1>
+        <p class="subtitle">مهارات قائد الاجتماع: الوقت، المشاركة، وإغلاق القرار</p>
+        <div class="author">
+          إعداد: المدرب بلال شنك، خبير التطوير المؤسسي
+          <small>عضو منظمة التوستماسترز العالمية</small>
+        </div>
+        <div class="counter-box">
+          <div class="counter-label">عدد الذين أخذوا التقييم</div>
+          <div class="odometer" id="odometer">
+            <div class="digit">0</div><div class="digit">0</div><div class="digit">0</div>
+            <div class="digit">0</div><div class="digit">0</div><div class="digit">0</div>
+          </div>
+        </div>
+      </header>
+      <nav class="steps">
+        <span class="active" data-s="intro">البداية</span>
+        <span data-s="quiz">الأسئلة الاثنا عشر</span>
+        <span data-s="report">التقرير والنصائح</span>
+      </nav>
+      <div class="body">
+        <section id="intro">
+          <h2>هدف الأداة</h2>
+          <p class="lead">تقيّم هذه الأداة مهارات قائد الاجتماع (الميسّر) في ثلاثة محاور أساسية: إدارة الوقت والانضباط، إدارة المشاركة ومنع السيطرة، وإغلاق القرارات بوضوح. النتيجة تُظهر نقاط القوة ونقاط التطوير، مع نصائح إدارية ودورات مناسبة.</p>
+          <p class="lead">12 سؤالاً على مقياس من 1 إلى 5. الدرجة القصوى 60.</p>
+          <div class="actions">
+            <button class="btn-gold" onclick="go('quiz')">ابدأ التقييم</button>
+          </div>
+        </section>
+        <section id="quiz" class="hidden">
+          <h2>الأسئلة الاثنا عشر</h2>
+          <p class="lead">اختر درجة موافقتك: 1 لا أوافق بشدة — 5 أوافق بشدة.</p>
+          <div id="questions"></div>
+          <div class="actions">
+            <button class="btn-ghost" onclick="go('intro')">رجوع</button>
+            <button class="btn-gold" onclick="compute()">إصدار التقرير</button>
+          </div>
+        </section>
+        <section id="report" class="hidden">
+          <div class="score-hero">
+            <div style="color:var(--muted);font-weight:700">مؤشر كفاءة الميسّر</div>
+            <div class="pct" id="pct">0<span>%</span></div>
+            <div id="levelBadge" class="badge l3">—</div>
+            <p id="rawScore" style="margin-top:8px;color:var(--muted)"></p>
+          </div>
+          <h2>تحليل المحاور الثلاثة</h2>
+          <table>
+            <thead><tr><th>المحور</th><th>الدرجة</th><th>النسبة</th></tr></thead>
+            <tbody id="axisTable"></tbody>
+          </table>
+          <p class="lead" id="weakNote" style="margin-top:12px"></p>
+          <div class="tips">
+            <h3>تفسير النتيجة</h3>
+            <ul>
+              <li><strong>85–100%</strong> ميسّر عالي الكفاءة</li>
+              <li><strong>70–84%</strong> ميسّر جيد</li>
+              <li><strong>55–69%</strong> يحتاج إلى تطوير</li>
+              <li><strong>40–54%</strong> مهارات منخفضة</li>
+              <li><strong>أقل من 40%</strong> يحتاج تدخلاً تدريبياً مكثفاً</li>
+            </ul>
+            <p id="levelExplain" style="margin-top:8px;line-height:1.8"></p>
+          </div>
+          <div class="tips">
+            <h3>نصائح إدارية للميسّر</h3>
+            <ul>
+              <li>أرسل جدول الأعمال قبل الاجتماع بوقت كافٍ وحدد زمن كل بند.</li>
+              <li>ابدأ في الوقت وذكّر الجميع بالمدة المتبقية.</li>
+              <li>اسأل الصامتين سؤالاً محدداً ولا تترك شخصاً واحداً يحتكر الحديث.</li>
+              <li>أوقف النقاشات الجانبية بلطف وأعد التركيز إلى الهدف.</li>
+              <li>قبل نهاية الاجتماع: لخّص القرار، سمّ المسؤول، وحدّد الموعد.</li>
+              <li>أرسل محضراً مختصراً في اليوم نفسه.</li>
+            </ul>
+          </div>
+          <div class="train-box">
+            <h3>تطوير وتدريب</h3>
+            <p>بناءً على أضعف محور، الدورة الأنسب لك الآن:</p>
+            <div class="course-name" id="courseName">—</div>
+            <p id="courseWhy" style="color:#c9d6e0;line-height:1.7"></p>
+            <div class="actions" style="margin-top:12px">
+              <button class="btn-gold" id="trainBtn">توصية الدورة</button>
+            </div>
+          </div>
+          <div class="actions no-print" style="margin-top:16px">
+            <button class="btn-navy" onclick="window.print()">طباعة التقرير</button>
+            <button class="btn-gold" onclick="downloadPdf()">حفظ PDF</button>
+            <button class="btn-ghost" onclick="resetAll()">تقييم جديد</button>
+          </div>
+          <footer class="note">أداة تقييم الميسّر — إعداد المدرب بلال شنك، خبير التطوير المؤسسي.</footer>
+        </section>
+      </div>
+    </div>
+  </div>
+<script>
+const AXES = [
+  { id: "time", title: "إدارة الوقت والانضباط", qs: [
+    "أبدأ الاجتماع في الوقت المحدد.",
+    "أنهي الاجتماع في الوقت المحدد.",
+    "ألتزم بجدول الأعمال ولا أسمح بالخروج عنه.",
+    "أوزّع الوقت على البنود بشكل عادل وواضح."
+  ]},
+  { id: "talk", title: "إدارة المشاركة ومنع السيطرة", qs: [
+    "أعطي الجميع فرصة حقيقية للتحدث.",
+    "أمنع شخصاً واحداً من احتكار معظم وقت الاجتماع.",
+    "أسأل الصامتين رأيهم بطريقة محترمة ومحددة.",
+    "أركز النقاش على الأفكار والمشكلات لا على الأشخاص."
+  ]},
+  { id: "close", title: "إغلاق القرارات والمتابعة", qs: [
+    "ألخّص القرارات بوضوح قبل نهاية الاجتماع.",
+    "أحدد المسؤول عن تنفيذ كل قرار.",
+    "أحدد موعداً أو إطاراً زمنياً لكل قرار.",
+    "أتأكد أن المشاركين يخرجون وهم يعرفون ما تم الاتفاق عليه."
+  ]}
+];
+const SCALE = [[1,"لا أوافق بشدة"],[2,"لا أوافق"],[3,"محايد"],[4,"أوافق"],[5,"أوافق بشدة"]];
+const KEY = "shannak_facilitator_count";
+function getCount(){return parseInt(localStorage.getItem(KEY)||"0",10);}
+function setCount(n){localStorage.setItem(KEY,String(n));renderCounter();}
+function renderCounter(){
+  const s=String(getCount()).padStart(6,"0");
+  document.querySelectorAll("#odometer .digit").forEach((el,i)=>el.textContent=s[i]);
+}
+function buildQuestions(){
+  const root=document.getElementById("questions");
+  root.innerHTML="";
+  let n=1;
+  AXES.forEach(ax=>{
+    const box=document.createElement("div");
+    box.className="axis";
+    box.innerHTML=`<h3>${ax.title}</h3>`;
+    ax.qs.forEach(text=>{
+      const q=document.createElement("div");
+      q.className="q";
+      const labs=SCALE.map(([v,lab])=>`<label><input type="radio" name="q${n}" value="${v}"/><span>${v}. ${lab}</span></label>`).join("");
+      q.innerHTML=`<p><span class="num">${n}.</span> ${text}</p><div class="scale">${labs}</div>`;
+      box.appendChild(q);
+      n++;
+    });
+    root.appendChild(box);
+  });
+}
+function go(id){
+  ["intro","quiz","report"].forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));
+  document.querySelectorAll("nav.steps span").forEach(el=>el.classList.toggle("active",el.dataset.s===id));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function answers(){
+  const vals=[];
+  for(let i=1;i<=12;i++){
+    const el=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!el)return null;
+    vals.push(parseInt(el.value,10));
+  }
+  return vals;
+}
+function levelOf(pct){
+  if(pct>=85)return{cls:"l1",title:"ميسّر عالي الكفاءة",range:"85–100%"};
+  if(pct>=70)return{cls:"l2",title:"ميسّر جيد",range:"70–84%"};
+  if(pct>=55)return{cls:"l3",title:"يحتاج إلى تطوير",range:"55–69%"};
+  if(pct>=40)return{cls:"l4",title:"مهارات منخفضة",range:"40–54%"};
+  return{cls:"l5",title:"يحتاج تدخلاً تدريبياً مكثفاً",range:"أقل من 40%"};
+}
+function recommend(axes){
+  const sorted=[...axes].sort((a,b)=>a.score-b.score);
+  const weak=sorted[0];
+  const map={
+    time:{course:"إدارة الوقت بكفاءة",why:"أضعف محور لديك هو إدارة الوقت والانضباط. دورة إدارة الوقت تساعدك على الالتزام بالجدول ومنع الإطالة."},
+    talk:{course:"الاجتماعات الفعالة والتيسير",why:"أضعف محور لديك هو إدارة المشاركة ومنع السيطرة. دورة التيسير تعلّمك كيف تُشرك الجميع وتمنع الاحتكار."},
+    close:{course:"حل المشكلات واتخاذ القرار",why:"أضعف محور لديك هو إغلاق القرارات. دورة اتخاذ القرار تركز على تلخيص القرار وتحديد المسؤول والموعد."}
+  };
+  return map[weak.id]||map.time;
+}
+function compute(){
+  const vals=answers();
+  if(!vals){alert("يرجى الإجابة على الأسئلة الاثني عشر جميعاً.");return;}
+  const total=vals.reduce((a,b)=>a+b,0);
+  const pct=Math.round((total/60)*100);
+  const axes=AXES.map((ax,i)=>{
+    const slice=vals.slice(i*4,i*4+4);
+    const score=slice.reduce((a,b)=>a+b,0);
+    return{id:ax.id,title:ax.title,score,pct:Math.round(score/20*100)};
+  });
+  const weakest=[...axes].sort((a,b)=>a.score-b.score)[0];
+  const L=levelOf(pct);
+  document.getElementById("pct").innerHTML=pct+"<span>%</span>";
+  const badge=document.getElementById("levelBadge");
+  badge.className="badge "+L.cls;
+  badge.textContent=L.title;
+  document.getElementById("rawScore").textContent=`المجموع ${total} من 60.`;
+  document.getElementById("axisTable").innerHTML=axes.map(a=>
+    `<tr><td>${a.title}<div class="bar"><i style="width:${a.pct}%"></i></div></td><td>${a.score}/20</td><td>${a.pct}%</td></tr>`
+  ).join("");
+  document.getElementById("weakNote").innerHTML=`<strong>أضعف محور:</strong> ${weakest.title} (${weakest.pct}%).`;
+  document.getElementById("levelExplain").textContent=`مستواك ضمن «${L.title}». ركّز تطويرك على المحور الأضعف لتحسين كفاءة قيادتك للاجتماعات.`;
+  const rec=recommend(axes);
+  document.getElementById("courseName").textContent=rec.course;
+  document.getElementById("courseWhy").textContent=rec.why;
+  document.getElementById("trainBtn").onclick=()=>alert("توصية التدريب:\\n\\n"+rec.course+"\\n\\n"+rec.why);
+  setCount(getCount()+1);
+  go("report");
+}
+function downloadPdf(){
+  const report=document.getElementById("report");
+  html2pdf().set({
+    margin:[10,10,10,10],
+    filename:"تقرير-تقييم-الميسر-شنك.pdf",
+    image:{type:"jpeg",quality:0.95},
+    html2canvas:{scale:2,backgroundColor:"#ffffff"},
+    jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}
+  }).from(report).save();
+}
+function resetAll(){
+  document.querySelectorAll("input[type=radio]").forEach(i=>i.checked=false);
+  go("intro");
+}
+buildQuestions();
+renderCounter();
+</script>
+</body>
+</html>
